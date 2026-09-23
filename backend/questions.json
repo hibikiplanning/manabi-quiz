@@ -1,0 +1,122 @@
+{
+  "levels": {
+    "kids": {
+      "label": "こども",
+      "description": "しょうがくせい むけ。ひらがな おおめ。"
+    },
+    "adults": {
+      "label": "おとな",
+      "description": "一般常識・理科・社会の基本問題。"
+    }
+  },
+  "questions": [
+    {
+      "id": "k01",
+      "level": "kids",
+      "category": "せいかつ",
+      "question": "1しゅうかんは なんにち？",
+      "choices": ["5にち", "6にち", "7にち", "10にち"],
+      "answer": 2,
+      "explanation": "にちようびから どようびまでで 7にち だよ。"
+    },
+    {
+      "id": "k02",
+      "level": "kids",
+      "category": "りか",
+      "question": "こんちゅうの あしは なんぼん？",
+      "choices": ["4ほん", "6ぽん", "8ほん", "10ぽん"],
+      "answer": 1,
+      "explanation": "こんちゅうの あしは 6ぽん。クモは 8ほん なので、こんちゅうの なかまでは ないよ。"
+    },
+    {
+      "id": "k03",
+      "level": "kids",
+      "category": "りか",
+      "question": "おひさまは どの ほうがくから のぼる？",
+      "choices": ["ひがし", "にし", "みなみ", "きた"],
+      "answer": 0,
+      "explanation": "おひさまは ひがしから のぼって、にしに しずむよ。"
+    },
+    {
+      "id": "k04",
+      "level": "kids",
+      "category": "さんすう",
+      "question": "12こ の あめを 3にんで おなじ かずずつ わけると、1にん なんこ？",
+      "choices": ["3こ", "4こ", "5こ", "6こ"],
+      "answer": 1,
+      "explanation": "12 ÷ 3 = 4。1にん 4こ ずつ だよ。"
+    },
+    {
+      "id": "k05",
+      "level": "kids",
+      "category": "りか",
+      "question": "みずが こおりに なるのは なんど？",
+      "choices": ["0ど", "10ど", "50ど", "100ど"],
+      "answer": 0,
+      "explanation": "みずは 0どで こおりに なって、100どで ふっとう するよ。"
+    },
+    {
+      "id": "k06",
+      "level": "kids",
+      "category": "せいかつ",
+      "question": "しんごうの 「とまれ」は なにいろ？",
+      "choices": ["あお", "きいろ", "あか", "みどり"],
+      "answer": 2,
+      "explanation": "あかは 「とまれ」。きいろは 「とまれ（あぶないときは そのまま すすむ）」、あおは 「すすんでも よい」だよ。"
+    },
+    {
+      "id": "a01",
+      "level": "adults",
+      "category": "地理",
+      "question": "日本でいちばん高い山は？",
+      "choices": ["北岳", "富士山", "槍ヶ岳", "御嶽山"],
+      "answer": 1,
+      "explanation": "富士山の標高は3,776m。2位は南アルプスの北岳（3,193m）です。"
+    },
+    {
+      "id": "a02",
+      "level": "adults",
+      "category": "社会",
+      "question": "日本の都道府県の数は？",
+      "choices": ["43", "45", "47", "50"],
+      "answer": 2,
+      "explanation": "1都（東京都）・1道（北海道）・2府（大阪府・京都府）・43県で、合わせて47です。"
+    },
+    {
+      "id": "a03",
+      "level": "adults",
+      "category": "理科",
+      "question": "元素記号「Fe」が表す元素は？",
+      "choices": ["フッ素", "鉄", "鉛", "金"],
+      "answer": 1,
+      "explanation": "Fe はラテン語 ferrum に由来し、鉄を表します。フッ素は F、鉛は Pb、金は Au です。"
+    },
+    {
+      "id": "a04",
+      "level": "adults",
+      "category": "理科",
+      "question": "光が真空中を進む速さは、1秒間におよそ何km？",
+      "choices": ["約3万km", "約30万km", "約300万km", "約3,000km"],
+      "answer": 1,
+      "explanation": "光の速さは秒速約30万km（正確には299,792.458km）。1秒で地球を約7周半する速さです。"
+    },
+    {
+      "id": "a05",
+      "level": "adults",
+      "category": "一般常識",
+      "question": "「1ダース」はいくつ？",
+      "choices": ["10", "12", "20", "24"],
+      "answer": 1,
+      "explanation": "1ダースは12個。12ダース（144個）を「1グロス」と呼びます。"
+    },
+    {
+      "id": "a06",
+      "level": "adults",
+      "category": "一般常識",
+      "question": "うるう年は、原則として何年に一度？",
+      "choices": ["2年", "3年", "4年", "5年"],
+      "answer": 2,
+      "explanation": "原則4年に一度。ただし100で割り切れる年は平年、さらに400で割り切れる年はうるう年です（例: 1900年は平年、2000年はうるう年）。"
+    }
+  ]
+}
