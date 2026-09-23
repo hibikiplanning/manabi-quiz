@@ -10,19 +10,31 @@ async function request(path, options) {
     } catch {
       /* 本文がJSONでないときはステータスだけ出す */
     }
-    throw new Error(`APIエラー: ${detail}`);
+    throw new Error(`APIエラー: ${typeof detail === "string" ? detail : JSON.stringify(detail)}`);
   }
   return res.json();
 }
+
+const postJson = (path, body) =>
+  request(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
 
 export const getLevels = () => request("/api/levels");
 
 export const getQuizzes = (level, limit = 5) =>
   request(`/api/quizzes?level=${encodeURIComponent(level)}&limit=${limit}`);
 
+/** こども: 選んだ選択肢の答え合わせ */
 export const postAnswer = (questionId, choiceId) =>
-  request("/api/answer", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question_id: questionId, choice_id: choiceId }),
-  });
+  postJson("/api/answer", { question_id: questionId, choice_id: choiceId });
+
+/** おとな: ブラウザで実行した各テストの返り値を送って判定してもらう */
+export const postJudge = (questionId, results) =>
+  postJson("/api/judge", { question_id: questionId, results });
+
+/** おとな: 解答例 */
+export const getSolution = (questionId) =>
+  request(`/api/solution/${encodeURIComponent(questionId)}`);
