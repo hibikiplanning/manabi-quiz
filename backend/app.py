@@ -54,8 +54,8 @@ def load_bank(path: Path = DATA_FILE) -> dict:
                 raise ValueError(f"{qid}: template に function {q['func']} がありません")
             if not q["tests"] or any("input" not in t or "expected" not in t for t in q["tests"]):
                 raise ValueError(f"{qid}: tests には input と expected が必要です")
-            if not q.get("sample"):
-                raise ValueError(f"{qid}: 解答例（sample）がありません")
+            if not q.get("sample") or not q.get("hint"):
+                raise ValueError(f"{qid}: 解答例（sample）と hint が必要です")
     return bank
 
 
@@ -153,7 +153,7 @@ def quizzes(
             rng.shuffle(choices)
             base.update(choices=choices, goal=q["goal"], hint=q["hint"])
         else:
-            base.update(func=q["func"], examples=q["examples"],
+            base.update(func=q["func"], examples=q["examples"], hint=q["hint"],
                         tests=[{"input": t["input"]} for t in q["tests"]])
         out.append(base)
     return out
@@ -161,15 +161,17 @@ def quizzes(
 
 @app.post("/api/answer")
 def answer(body: AnswerIn) -> dict:
-    """こども（選択式）の答え合わせ。"""
+    """こども（選択式）の答え合わせ。
+
+    まちがえたときは正解を教えない（もう一度えらんで、うごかして確かめてもらう）。
+    解説は正解したときだけ返す。
+    """
     q = get_question(body.question_id, "choice")
     if not 0 <= body.choice_id < len(q["choices"]):
         raise HTTPException(422, "選択肢の番号が範囲外です")
-    return {
-        "correct": body.choice_id == q["answer"],
-        "correct_choice_id": q["answer"],
-        "explanation": q["explanation"],
-    }
+    if body.choice_id != q["answer"]:
+        return {"correct": False}
+    return {"correct": True, "explanation": q["explanation"]}
 
 
 @app.post("/api/judge")

@@ -4,43 +4,64 @@ import { explainError, runProgram } from "./runner.js";
 
 const SLOT = "□";
 
-/** ためした数が少ないほど ★ が多い。考えてから答えると ★3 */
-const starsFor = (tried) => Math.max(1, 4 - tried);
+/** 1かいめで あたると ★3、2かいめ ★2、それより あとは ★1 */
+const starsFor = (attempts) => Math.max(1, 4 - attempts);
 
 /**
- * こども向け: □ に入るものを選ぶと、そのコードをすぐ動かして結果を見せる。
- * 「めざす けっか」と見比べながら、ためして学ぶ。
+ * こども向け: □ に入るものを「えらぶ」→「うごかしてみる」→ 結果を「めざす けっか」と見くらべる。
+ * 予想してから確かめる。まちがえたら、そのけっかを見て もう一度えらぶ（正解は教えない）。
  */
 export default function KidsQuestion({ q, index, total, onDone }) {
-  const [selected, setSelected] = useState(null); // choice
-  const [run, setRun] = useState(null); // 実行結果
-  const [tried, setTried] = useState(() => new Set());
+  const [selected, setSelected] = useState(null); // えらんでいる choice
+  const [run, setRun] = useState(null); // うごかした けっか
+  const [wrongIds, setWrongIds] = useState(() => new Set()); // まちがえた choice
+  const [attempts, setAttempts] = useState(0);
+  const [done, setDone] = useState(null); // 正解したときの { explanation, stars }
   const [showHint, setShowHint] = useState(false);
-  const [feedback, setFeedback] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const runId = useRef(0);
+  const runButton = useRef(null);
 
   const [before, after] = q.template.split(SLOT);
   const output = run && run.ok ? run.output.join("\n") : null;
-  const matches = output !== null && output === q.goal;
+  const lastWasWrong = run && !done && selected === null;
 
-  const tryChoice = async (choice) => {
-    if (feedback) return;
+  const choose = (choice) => {
+    if (done || busy || wrongIds.has(choice.id)) return;
     setSelected(choice);
-    setTried((prev) => new Set(prev).add(choice.id));
-    const id = ++runId.current; // 連打したときは最後の結果だけ使う
-    const r = await runProgram(before + choice.text + after);
-    if (id === runId.current) setRun(r);
   };
 
-  const check = async () => {
-    if (!selected || feedback || busy) return;
+  // えらんだら「うごかしてみる」に フォーカス → Enter ですぐ うごかせる。
+  // ボタンが おせる じょうたいに なってから うつす（おせない ボタンには フォーカス できない）。
+  // がめんが かってに スクロール しないように preventScroll。
+  useEffect(() => {
+    if (selected && !done) runButton.current?.focus({ preventScroll: true });
+  }, [selected, done]);
+
+  // せいかいしたら「つぎへ」に フォーカス → Enter で すすめる
+  const nextButton = useRef(null);
+  useEffect(() => {
+    if (done) nextButton.current?.focus({ preventScroll: true });
+  }, [done]);
+
+  const tryIt = async () => {
+    if (!selected || done || busy) return;
     setBusy(true);
     setError("");
     try {
-      const r = await postAnswer(q.id, selected.id);
-      setFeedback({ ...r, stars: r.correct ? starsFor(tried.size) : 0 });
+      const [r, judge] = await Promise.all([
+        runProgram(before + selected.text + after),
+        postAnswer(q.id, selected.id),
+      ]);
+      const n = attempts + 1;
+      setAttempts(n);
+      setRun(r);
+      if (judge.correct) {
+        setDone({ explanation: judge.explanation, stars: starsFor(n) });
+      } else {
+        setWrongIds((prev) => new Set(prev).add(selected.id));
+        setSelected(null); // まちがえたものは もう えらべない
+      }
     } catch (e) {
       setError(e.message);
     } finally {
@@ -48,18 +69,16 @@ export default function KidsQuestion({ q, index, total, onDone }) {
     }
   };
 
-  // すうじキー 1〜4 で ためす（入力欄にいるときは なにもしない）
+  // すうじキー 1〜4 で えらぶ
   useEffect(() => {
     const onKey = (e) => {
-      if (feedback || ["INPUT", "TEXTAREA"].includes(e.target.tagName)) return;
+      if (["INPUT", "TEXTAREA"].includes(e.target.tagName)) return;
       const n = Number(e.key);
-      if (n >= 1 && n <= q.choices.length) tryChoice(q.choices[n - 1]);
+      if (n >= 1 && n <= q.choices.length) choose(q.choices[n - 1]);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   });
-
-  const correctText = feedback && q.choices.find((c) => c.id === feedback.correct_choice_id)?.text;
 
   return (
     <section className="card">
@@ -68,6 +87,16 @@ export default function KidsQuestion({ q, index, total, onDone }) {
         <span>{index + 1} / {total}</span>
       </p>
       <h2 className="question">{q.question}</h2>
+
+      {/* たすけ: すすむボタンとは はなして おく */}
+      {!done && (
+        <div className="helpers">
+          <button className="link" onClick={() => setShowHint((v) => !v)}>
+            💡 {showHint ? "ヒントを とじる" : "ヒントを みる"}
+          </button>
+        </div>
+      )}
+      {showHint && !done && <p className="hint-box">{q.hint}</p>}
 
       <div className="panes">
         <div>
@@ -80,9 +109,9 @@ export default function KidsQuestion({ q, index, total, onDone }) {
             <pre className="console goal">{q.goal}</pre>
           </div>
           <div>
-            <p className="pane-label">いまの けっか {matches && <span className="match">✓ おなじ！</span>}</p>
+            <p className="pane-label">うごかした けっか</p>
             <pre className={`console ${run && !run.ok ? "err" : ""}`} aria-live="polite">
-              {!run && "えらぶと ここに けっかが でるよ"}
+              {!run && "えらんで「うごかしてみる」を おすと、ここに でるよ"}
               {run && run.ok && (output === "" ? "（なにも ひょうじ されなかったよ）" : output)}
               {run && !run.ok && explainError(run, true)}
             </pre>
@@ -90,52 +119,54 @@ export default function KidsQuestion({ q, index, total, onDone }) {
         </div>
       </div>
 
-      <p className="pane-label">□ に いれて ためしてみよう（キー 1〜{q.choices.length}）</p>
+      <p className="pane-label">□ に はいる ものを えらんでね（キー 1〜{q.choices.length}）</p>
       <div className="chips">
         {q.choices.map((c, i) => {
-          let state = selected?.id === c.id ? "is-selected" : "";
-          if (feedback) {
-            if (c.id === feedback.correct_choice_id) state = "is-correct";
-            else if (c.id === selected?.id) state = "is-wrong";
-            else state = "is-dim";
-          }
+          const wrong = wrongIds.has(c.id);
+          let state = "";
+          if (wrong) state = "is-wrong";
+          else if (done && c.id === selected?.id) state = "is-correct";
+          else if (selected?.id === c.id) state = "is-selected";
+          else if (done) state = "is-dim";
           return (
-            <button key={c.id} className={`chip ${state}`} disabled={!!feedback}
-                    onClick={() => tryChoice(c)}>
-              <span className="num">{i + 1}</span><code>{c.text}</code>
+            <button key={c.id} className={`chip ${state}`} disabled={!!done || wrong}
+                    onClick={() => choose(c)}>
+              <span className="num">{wrong ? "✗" : i + 1}</span><code>{c.text}</code>
             </button>
           );
         })}
       </div>
 
-      {!feedback && (
-        <div className="row">
-          <button className="ghost" onClick={() => setShowHint((v) => !v)}>
-            {showHint ? "ヒントを とじる" : "💡 ヒント"}
-          </button>
-          <button className="primary" disabled={!selected || busy} onClick={check}>
-            これで こたえあわせ
-          </button>
-        </div>
+      {lastWasWrong && (
+        <p className="status ng" aria-live="polite">
+          ちがった みたい。「めざす けっか」と「うごかした けっか」を みくらべて、べつの ものを えらんでね。
+        </p>
       )}
-      {showHint && !feedback && <p className="hint-box">{q.hint}</p>}
       {error && <p className="error" role="alert">{error}</p>}
 
-      {feedback && (
-        <div className={`feedback ${feedback.correct ? "ok" : "ng"}`} aria-live="polite">
+      {done && (
+        <div className="status ok" aria-live="polite">
           <p className="verdict">
-            {feedback.correct ? "せいかい！" : "ざんねん…"}
-            {feedback.correct && <span className="stars" aria-label={`ほし ${feedback.stars}こ`}>{"★".repeat(feedback.stars)}{"☆".repeat(3 - feedback.stars)}</span>}
+            せいかい！
+            <span className="stars" aria-label={`ほし ${done.stars}こ`}>{"★".repeat(done.stars)}{"☆".repeat(3 - done.stars)}</span>
           </p>
-          {!feedback.correct && <p>こたえは <code>{correctText}</code> だよ。</p>}
-          {feedback.correct && feedback.stars < 3 && <p className="small">かんがえてから こたえると ★ が ふえるよ。</p>}
-          <p className="explain">{feedback.explanation}</p>
-          <button className="primary" autoFocus
-                  onClick={() => onDone({ correct: feedback.correct, stars: feedback.stars })}>
-            {index + 1 === total ? "けっかを みる" : "つぎへ"}
-          </button>
+          {done.stars < 3 && <p className="small">1かいめで あてると ★3 だよ。</p>}
+          <p className="explain">{done.explanation}</p>
         </div>
       )}
+
+      {/* すすむボタンは いつも カードの みぎ下 */}
+      <div className="actionbar">
+        {!done ? (
+          <button key="run" ref={runButton} className="primary" disabled={!selected || busy} onClick={tryIt}>
+            {busy ? "うごかしてるよ…" : "▶ うごかしてみる"}
+          </button>
+        ) : (
+          <button key="next" ref={nextButton} className="primary" onClick={() => onDone({ correct: true, stars: done.stars })}>
+            {index + 1 === total ? "けっかを みる" : "つぎへ ▶"}
+          </button>
+        )}
+      </div>
     </section>
   );
 }

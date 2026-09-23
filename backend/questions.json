@@ -3,12 +3,12 @@
     "kids": {
       "label": "こども",
       "kind": "choice",
-      "description": "コードの あなに はいる ものを えらぶよ。えらぶと すぐ うごかして けっかが みられる！"
+      "description": "コードの あなに はいる ものを えらんで、うごかして たしかめよう。1かいめで あたると ★3！"
     },
     "adults": {
-      "label": "おとな",
+      "label": "おとな（経験者向け）",
       "kind": "code",
-      "description": "関数の中身を自分で書いて、テストで確かめる。書いたコードはブラウザ内で安全に実行します。"
+      "description": "JavaScript の関数と配列を少し知っている人向け。関数の中身を自分で書いて、テストで確かめます。ヒントと解答例あり。"
     }
   },
   "questions": [
@@ -18,7 +18,12 @@
       "title": "もじを ひょうじ しよう",
       "question": "がめんに こんにちは と だしたい。□ に はいるのは どれ？",
       "template": "console.log(□);",
-      "choices": ["こんにちは", "\"こんにちは\"", "\"こんにちは", "こんにちは\""],
+      "choices": [
+        "こんにちは",
+        "\"こんにちは\"",
+        "\"こんにちは",
+        "こんにちは\""
+      ],
       "answer": 1,
       "goal": "こんにちは",
       "hint": "もじは \" \" で はさむと、「これは もじだよ」と コンピューターに つたわるよ。",
@@ -30,7 +35,12 @@
       "title": "けいさん させよう",
       "question": "12 と ひょうじ したい。□ に はいる きごうは どれ？",
       "template": "console.log(3 □ 4);",
-      "choices": ["+", "-", "*", "/"],
+      "choices": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
       "answer": 2,
       "goal": "12",
       "hint": "プログラムでは、かけざんに × ではなく * を つかうよ。",
@@ -42,7 +52,12 @@
       "title": "くりかえそう",
       "question": "⭐ を 3こ ならべたい。□ に はいる かずは どれ？",
       "template": "for (let i = 0; i < □; i++) {\n  console.log(\"⭐\");\n}",
-      "choices": ["1", "2", "3", "4"],
+      "choices": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
       "answer": 2,
       "goal": "⭐\n⭐\n⭐",
       "hint": "i は 0 から はじまって、1ずつ ふえるよ。i が □ より ちいさい あいだ くりかえすよ。",
@@ -54,7 +69,12 @@
       "title": "はこ（へんすう）を つかおう",
       "question": "こんにちは、たろう と ひょうじ したい。□ に はいるのは どれ？",
       "template": "let name = \"たろう\";\nconsole.log(\"こんにちは、\" + □);",
-      "choices": ["name", "\"name\"", "たろう", "Name"],
+      "choices": [
+        "name",
+        "\"name\"",
+        "たろう",
+        "Name"
+      ],
       "answer": 0,
       "goal": "こんにちは、たろう",
       "hint": "name という なまえの はこに \"たろう\" が はいっているよ。",
@@ -66,7 +86,12 @@
       "title": "もし〜なら",
       "question": "8さいの ときに「しょうがくせい だね！」と だしたい。□ に はいるのは どれ？",
       "template": "let age = 8;\nif (age □ 6) {\n  console.log(\"しょうがくせい だね！\");\n}",
-      "choices": [">=", "<", "===", "<="],
+      "choices": [
+        ">=",
+        "<",
+        "===",
+        "<="
+      ],
       "answer": 0,
       "goal": "しょうがくせい だね！",
       "hint": ">= は「いじょう」、< は「より ちいさい」、=== は「おなじ」という いみ だよ。",
@@ -78,7 +103,12 @@
       "title": "2の だん",
       "question": "2, 4, 6, 8, 10 と ひょうじ したい。□ に はいるのは どれ？",
       "template": "for (let i = 1; i <= 5; i++) {\n  console.log(□);\n}",
-      "choices": ["2 * i", "2 + i", "i", "2"],
+      "choices": [
+        "2 * i",
+        "2 + i",
+        "i",
+        "2"
+      ],
       "answer": 0,
       "goal": "2\n4\n6\n8\n10",
       "hint": "i は 1, 2, 3, 4, 5 と かわって いくよ。",
@@ -89,14 +119,56 @@
       "level": "adults",
       "title": "配列の合計",
       "question": "数値の配列を受け取り、その合計を返す関数 sum を完成させてください。空の配列なら 0 を返します。",
+      "hint": "合計を入れる変数を 0 で用意して、for...of で1つずつ足していきます。最後に return で返します。",
       "template": "function sum(nums) {\n  // ここに書く\n}",
       "func": "sum",
-      "examples": [{"input": [[1, 2, 3]], "output": 6}],
+      "examples": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": 6
+        }
+      ],
       "tests": [
-        {"input": [[1, 2, 3]], "expected": 6},
-        {"input": [[]], "expected": 0},
-        {"input": [[-5, 10, 0]], "expected": 5},
-        {"input": [[100]], "expected": 100}
+        {
+          "input": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "expected": 6
+        },
+        {
+          "input": [
+            []
+          ],
+          "expected": 0
+        },
+        {
+          "input": [
+            [
+              -5,
+              10,
+              0
+            ]
+          ],
+          "expected": 5
+        },
+        {
+          "input": [
+            [
+              100
+            ]
+          ],
+          "expected": 100
+        }
       ],
       "sample": "function sum(nums) {\n  let total = 0;\n  for (const n of nums) total += n;\n  return total;\n}",
       "explanation": "for...of で順に足していきます。nums.reduce((a, b) => a + b, 0) と1行でも書けます。初期値 0 を渡すことが、空の配列で正しく 0 を返すポイントです。"
@@ -106,14 +178,69 @@
       "level": "adults",
       "title": "偶数だけ取り出す",
       "question": "数値の配列から偶数だけを取り出した新しい配列を返す関数 evens を完成させてください。",
+      "hint": "配列の filter を使うと、条件に合う要素だけを集めた新しい配列が作れます。偶数は「2で割った余りが 0」の数です。",
       "template": "function evens(nums) {\n  // ここに書く\n}",
       "func": "evens",
-      "examples": [{"input": [[1, 2, 3, 4]], "output": [2, 4]}],
+      "examples": [
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4
+            ]
+          ],
+          "output": [
+            2,
+            4
+          ]
+        }
+      ],
       "tests": [
-        {"input": [[1, 2, 3, 4]], "expected": [2, 4]},
-        {"input": [[1, 3, 5]], "expected": []},
-        {"input": [[0, -2, 7]], "expected": [0, -2]},
-        {"input": [[]], "expected": []}
+        {
+          "input": [
+            [
+              1,
+              2,
+              3,
+              4
+            ]
+          ],
+          "expected": [
+            2,
+            4
+          ]
+        },
+        {
+          "input": [
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "expected": []
+        },
+        {
+          "input": [
+            [
+              0,
+              -2,
+              7
+            ]
+          ],
+          "expected": [
+            0,
+            -2
+          ]
+        },
+        {
+          "input": [
+            []
+          ],
+          "expected": []
+        }
       ],
       "sample": "function evens(nums) {\n  return nums.filter((n) => n % 2 === 0);\n}",
       "explanation": "filter は条件に合う要素だけを集めた新しい配列を返します。n % 2 は 2 で割った余りです。0 や負の偶数も === 0 で正しく判定できます。"
@@ -123,14 +250,72 @@
       "level": "adults",
       "title": "FizzBuzz",
       "question": "1 から n までについて、3の倍数は \"Fizz\"、5の倍数は \"Buzz\"、両方の倍数は \"FizzBuzz\"、それ以外は数値そのものを並べた配列を返す関数 fizzbuzz を完成させてください。",
+      "hint": "for で 1 から n まで回し、結果を配列に push します。15の倍数かどうかを最初に調べるのがコツです。",
       "template": "function fizzbuzz(n) {\n  // ここに書く\n}",
       "func": "fizzbuzz",
-      "examples": [{"input": [5], "output": [1, 2, "Fizz", 4, "Buzz"]}],
+      "examples": [
+        {
+          "input": [
+            5
+          ],
+          "output": [
+            1,
+            2,
+            "Fizz",
+            4,
+            "Buzz"
+          ]
+        }
+      ],
       "tests": [
-        {"input": [5], "expected": [1, 2, "Fizz", 4, "Buzz"]},
-        {"input": [15], "expected": [1, 2, "Fizz", 4, "Buzz", "Fizz", 7, 8, "Fizz", "Buzz", 11, "Fizz", 13, 14, "FizzBuzz"]},
-        {"input": [1], "expected": [1]},
-        {"input": [0], "expected": []}
+        {
+          "input": [
+            5
+          ],
+          "expected": [
+            1,
+            2,
+            "Fizz",
+            4,
+            "Buzz"
+          ]
+        },
+        {
+          "input": [
+            15
+          ],
+          "expected": [
+            1,
+            2,
+            "Fizz",
+            4,
+            "Buzz",
+            "Fizz",
+            7,
+            8,
+            "Fizz",
+            "Buzz",
+            11,
+            "Fizz",
+            13,
+            14,
+            "FizzBuzz"
+          ]
+        },
+        {
+          "input": [
+            1
+          ],
+          "expected": [
+            1
+          ]
+        },
+        {
+          "input": [
+            0
+          ],
+          "expected": []
+        }
       ],
       "sample": "function fizzbuzz(n) {\n  const out = [];\n  for (let i = 1; i <= n; i++) {\n    if (i % 15 === 0) out.push(\"FizzBuzz\");\n    else if (i % 3 === 0) out.push(\"Fizz\");\n    else if (i % 5 === 0) out.push(\"Buzz\");\n    else out.push(i);\n  }\n  return out;\n}",
       "explanation": "3と5の両方の倍数（15の倍数）を最初に判定するのがポイントです。順番を逆にすると、15 が \"Fizz\" になってしまいます。"
@@ -140,14 +325,42 @@
       "level": "adults",
       "title": "文字列を逆順に",
       "question": "文字列を受け取り、逆順にした文字列を返す関数 reverse を完成させてください。",
+      "hint": "文字列を1文字ずつの配列にして（[...s]）、reverse で並びを逆にし、join でつなぎ直します。",
       "template": "function reverse(s) {\n  // ここに書く\n}",
       "func": "reverse",
-      "examples": [{"input": ["abc"], "output": "cba"}],
+      "examples": [
+        {
+          "input": [
+            "abc"
+          ],
+          "output": "cba"
+        }
+      ],
       "tests": [
-        {"input": ["abc"], "expected": "cba"},
-        {"input": [""], "expected": ""},
-        {"input": ["こんにちは"], "expected": "はちにんこ"},
-        {"input": ["a"], "expected": "a"}
+        {
+          "input": [
+            "abc"
+          ],
+          "expected": "cba"
+        },
+        {
+          "input": [
+            ""
+          ],
+          "expected": ""
+        },
+        {
+          "input": [
+            "こんにちは"
+          ],
+          "expected": "はちにんこ"
+        },
+        {
+          "input": [
+            "a"
+          ],
+          "expected": "a"
+        }
       ],
       "sample": "function reverse(s) {\n  return [...s].reverse().join(\"\");\n}",
       "explanation": "[...s] で1文字ずつの配列にし、reverse で並びを逆にして、join でつなぎ直します。s.split(\"\") でも動きますが、[...s] は絵文字のような特殊な文字でも壊れにくい書き方です。"
@@ -157,13 +370,54 @@
       "level": "adults",
       "title": "最大値",
       "question": "数値の配列から最大値を返す関数 max を完成させてください。配列には1つ以上の要素が入っています。",
+      "hint": "最初の要素を「今の最大」にして、それより大きい値が出てきたら入れ替えます。",
       "template": "function max(nums) {\n  // ここに書く\n}",
       "func": "max",
-      "examples": [{"input": [[3, 1, 4, 1, 5]], "output": 5}],
+      "examples": [
+        {
+          "input": [
+            [
+              3,
+              1,
+              4,
+              1,
+              5
+            ]
+          ],
+          "output": 5
+        }
+      ],
       "tests": [
-        {"input": [[3, 1, 4, 1, 5]], "expected": 5},
-        {"input": [[-7, -2, -9]], "expected": -2},
-        {"input": [[42]], "expected": 42}
+        {
+          "input": [
+            [
+              3,
+              1,
+              4,
+              1,
+              5
+            ]
+          ],
+          "expected": 5
+        },
+        {
+          "input": [
+            [
+              -7,
+              -2,
+              -9
+            ]
+          ],
+          "expected": -2
+        },
+        {
+          "input": [
+            [
+              42
+            ]
+          ],
+          "expected": 42
+        }
       ],
       "sample": "function max(nums) {\n  let best = nums[0];\n  for (const n of nums) {\n    if (n > best) best = n;\n  }\n  return best;\n}",
       "explanation": "最初の要素を仮の最大値にして、より大きい値が来たら入れ替えます。仮の値を 0 から始めると、すべて負の数のときに間違えます（2つ目のテストはそれを確かめています）。Math.max(...nums) でも書けます。"
@@ -173,15 +427,48 @@
       "level": "adults",
       "title": "回文の判定",
       "question": "前から読んでも後ろから読んでも同じ文字列（回文）なら true、そうでなければ false を返す関数 isPalindrome を完成させてください。",
+      "hint": "逆順にした文字列と元の文字列が同じなら回文です。",
       "template": "function isPalindrome(s) {\n  // ここに書く\n}",
       "func": "isPalindrome",
-      "examples": [{"input": ["level"], "output": true}],
+      "examples": [
+        {
+          "input": [
+            "level"
+          ],
+          "output": true
+        }
+      ],
       "tests": [
-        {"input": ["level"], "expected": true},
-        {"input": ["abc"], "expected": false},
-        {"input": ["たけやぶやけた"], "expected": true},
-        {"input": [""], "expected": true},
-        {"input": ["ab"], "expected": false}
+        {
+          "input": [
+            "level"
+          ],
+          "expected": true
+        },
+        {
+          "input": [
+            "abc"
+          ],
+          "expected": false
+        },
+        {
+          "input": [
+            "たけやぶやけた"
+          ],
+          "expected": true
+        },
+        {
+          "input": [
+            ""
+          ],
+          "expected": true
+        },
+        {
+          "input": [
+            "ab"
+          ],
+          "expected": false
+        }
       ],
       "sample": "function isPalindrome(s) {\n  return s === [...s].reverse().join(\"\");\n}",
       "explanation": "逆順にした文字列と元の文字列を比べます。「文字列を逆順に」の問題と同じ考え方がそのまま使えます。"

@@ -16,6 +16,11 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
+  // 問題や画面が切り替わったら、必ず上から見せる（前の問題の下のほうから始まらないように）
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [screen, index]);
+
   useEffect(() => {
     getLevels()
       .then(setLevels)
@@ -66,7 +71,7 @@ export default function App() {
                 <button key={lv.id} className={`level level-${lv.id}`} disabled={busy}
                         onClick={() => start(lv)}>
                   <span className="level-label">{lv.label}</span>
-                  <span className="level-kind">{lv.kind === "choice" ? "えらんで ためす" : "自分で書く"}</span>
+                  <span className="level-kind">{lv.kind === "choice" ? "えらんで うごかす" : "自分で書く"}</span>
                   <span className="level-desc">{lv.description}</span>
                   <span className="level-count">全{lv.count}問から{Math.min(QUESTIONS_PER_ROUND, lv.count)}問</span>
                 </button>

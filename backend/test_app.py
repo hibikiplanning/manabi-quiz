@@ -72,6 +72,7 @@ def test_health():
 def test_levels_have_kind_and_counts():
     body = {lv["id"]: lv for lv in client.get("/api/levels").json()}
     assert body["kids"]["kind"] == "choice" and body["adults"]["kind"] == "code"
+    assert "経験者" in body["adults"]["label"]  # 「おとな」だけだと誰でも解けると誤解される
     assert all(lv["count"] >= 5 for lv in body.values())
 
 
@@ -97,14 +98,15 @@ def test_choice_correct_even_after_shuffle():
     q = client.get("/api/quizzes", params={"level": "kids", "limit": 1, "seed": 7}).json()[0]
     truth = quiz.BY_ID[q["id"]]["answer"]
     r = client.post("/api/answer", json={"question_id": q["id"], "choice_id": truth}).json()
-    assert r["correct"] is True and r["correct_choice_id"] == truth and r["explanation"]
+    assert r["correct"] is True and r["explanation"]
 
 
-def test_choice_wrong_answer():
+def test_choice_wrong_answer_does_not_reveal_the_answer():
+    # まちがえたら、もう一度えらんで確かめてもらう。正解も解説も返さない
     q = quiz.BY_ID["k01"]
     wrong = (q["answer"] + 1) % len(q["choices"])
     r = client.post("/api/answer", json={"question_id": "k01", "choice_id": wrong}).json()
-    assert r["correct"] is False and r["correct_choice_id"] == q["answer"]
+    assert r == {"correct": False}
 
 
 def test_answer_validation():
@@ -118,7 +120,7 @@ def test_answer_validation():
 
 def test_code_quizzes_never_leak_expected_or_sample():
     for q in client.get("/api/quizzes", params={"level": "adults", "limit": 50}).json():
-        assert q["kind"] == "code" and q["func"]
+        assert q["kind"] == "code" and q["func"] and q["hint"]
         assert "sample" not in q and "explanation" not in q
         assert all(set(t) == {"input"} for t in q["tests"])
 
